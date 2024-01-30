@@ -4,7 +4,7 @@
 update_type="patch"
 pre_release=true
 
-update_version() {
+update_version(update_type) {
     GIT='git --git-dir='$PWD'/.git'
   # Update version based on the specified type and commit the changes
   version=$(npm version "$update_type")
@@ -51,7 +51,7 @@ current_branch=$(git rev-parse --abbrev-ref HEAD)
 
 # Update version only if it's a pre-release
 if [ "$pre_release" = true ]; then
-    version=$(update_version)
+    version=$($update_version)
 else
   # Use the existing version in package.json
   version=$(jq -r '.version' package.json)
@@ -59,7 +59,6 @@ fi
 
 # Create a new release with the generated version
 if [ "$pre_release" = true ]; then
-    echo $version
   gh release create "$version" --generate-notes -p --target "$current_branch"
   echo "Pre-release $version created."
 else
