@@ -8,8 +8,8 @@ update_version() {
     GIT='git --git-dir='$PWD'/.git'
   # Update version based on the specified type and commit the changes
   version=$(npm version "$update_type")
-  GIT add package.json 
-  GIT commit -m "Bump version to $version"
+  $GIT add package.json 
+  $GIT commit -m "Bump version to $version"
   
   # Check if the git commands were successful
   if [ $? -ne 0 ]; then
