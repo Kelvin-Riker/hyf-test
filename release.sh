@@ -3,13 +3,14 @@
 # Set default values
 update_type="patch"
 pre_release=true
+
 update_version() {
   # Update version based on the specified type and commit the changes
   version=$(npm version "$update_type")
   git add package.json 
   git commit -m "Bump version to $version"
   git push  # Push the changes to the remote repository
-  return version
+  echo "$version"  # Return the version
 }
 
 # Parse command-line arguments
@@ -35,7 +36,7 @@ current_branch=$(git rev-parse --abbrev-ref HEAD)
 
 # Update version only if it's a pre-release
 if [ "$pre_release" = true ]; then
-    version=$(update_version())
+    version=$(update_version)
 else
   # Use the existing version in package.json
   version=$(jq -r '.version' package.json)
