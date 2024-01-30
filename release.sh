@@ -17,7 +17,7 @@ update_version() {
     exit 1
   fi
 
-  git push  # Push the changes to the remote repository
+  $GIT push  # Push the changes to the remote repository
   
   # Check if the git push was successful
   if [ $? -ne 0 ]; then
