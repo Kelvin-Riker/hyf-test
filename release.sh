@@ -66,4 +66,4 @@ if [ "$pre_release" = true ]; then
 else
     gh release edit "v$version" --prerelease=false --latest
     echo "Release $version released."
-f
+fi
