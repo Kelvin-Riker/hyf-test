@@ -4,28 +4,30 @@
 update_type="patch"
 pre_release=true
 
-update_version(update_type) {
-    GIT='git --git-dir='$PWD'/.git'
-  # Update version based on the specified type and commit the changes
-  version=$(npm version "$update_type")
-  $GIT add package.json 
-  $GIT commit -m "Bump version to $version"
-  
-  # Check if the git commands were successful
-  if [ $? -ne 0 ]; then
-    echo "Error: Failed to commit version changes."
-    exit 1
-  fi
+# Function to update version, commit changes, and push to the remote repository
+update_version() {
+    GIT="git --git-dir=$PWD/.git"
 
-  $GIT push  # Push the changes to the remote repository
-  
-  # Check if the git push was successful
-  if [ $? -ne 0 ]; then
-    echo "Error: Failed to push version changes."
-    exit 1
-  fi
+    # Update version based on the specified type and commit the changes
+    version=$(npm version "$update_type")
+    $GIT add package.json
+    $GIT commit -m "Bump version to $version"
 
-  echo "$version"  # Return the version
+    # Check if the git commands were successful
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to commit version changes."
+        exit 1
+    fi
+
+    $GIT push  # Push the changes to the remote repository
+
+    # Check if the git push was successful
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to push version changes."
+        exit 1
+    fi
+
+    echo "$version"  # Return the version
 }
 
 # Parse command-line arguments
@@ -51,18 +53,17 @@ current_branch=$(git rev-parse --abbrev-ref HEAD)
 
 # Update version only if it's a pre-release
 if [ "$pre_release" = true ]; then
-    version=$($update_version)
+    version=$(update_version)
 else
-  # Use the existing version in package.json
-  version=$(jq -r '.version' package.json)
+    # Use the existing version in package.json
+    version=$(jq -r '.version' package.json)
 fi
 
 # Create a new release with the generated version
 if [ "$pre_release" = true ]; then
-  gh release create "$version" --generate-notes -p --target "$current_branch"
-  echo "Pre-release $version created."
+    gh release create "$version" --generate-notes -p --target "$current_branch"
+    echo "Pre-release $version created."
 else
-  gh release edit v"$version" --prerelease=false --latest
-  echo "Release $version released."
-fi
-
+    gh release edit "v$version" --prerelease=false --latest
+    echo "Release $version released."
+f
