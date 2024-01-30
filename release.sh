@@ -25,21 +25,24 @@ done
 # Get the current branch name
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 
-
-# Create a new release with the generated version
+# Update version only if it's a pre-release
 if [ "$pre_release" = true ]; then
-
-  #Update version based on the specified type
+  # Update version based on the specified type and commit the changes
   version=$(npm version "$update_type")
   git add package.json 
   git commit -m "Bump version to $version"
-  git push
+  git push  # Push the changes to the remote repository
+else
+  # Use the existing version in package.json
+  version=$(jq -r '.version' package.json)
+fi
 
+# Create a new release with the generated version
+if [ "$pre_release" = true ]; then
   gh release create "$version" --generate-notes -p --target "$current_branch"
   echo "Pre-release $version created."
 else
-  version=$(jq -r '.version' package.json)
-  echo $version
   gh release edit v"$version" --prerelease=false --latest
   echo "Release $version released."
 fi
+
