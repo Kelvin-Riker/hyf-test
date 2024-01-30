@@ -59,6 +59,7 @@ fi
 
 # Create a new release with the generated version
 if [ "$pre_release" = true ]; then
+    echo $version
   gh release create "$version" --generate-notes -p --target "$current_branch"
   echo "Pre-release $version created."
 else
