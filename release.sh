@@ -9,7 +9,21 @@ update_version() {
   version=$(npm version "$update_type")
   git add package.json 
   git commit -m "Bump version to $version"
+  
+  # Check if the git commands were successful
+  if [ $? -ne 0 ]; then
+    echo "Error: Failed to commit version changes."
+    exit 1
+  fi
+
   git push  # Push the changes to the remote repository
+  
+  # Check if the git push was successful
+  if [ $? -ne 0 ]; then
+    echo "Error: Failed to push version changes."
+    exit 1
+  fi
+
   echo "$version"  # Return the version
 }
 
