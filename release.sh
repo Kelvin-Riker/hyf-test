@@ -31,6 +31,9 @@ if [ "$pre_release" = true ]; then
 
   #Update version based on the specified type
   version=$(npm version "$update_type")
+  git add package.json package-lock.json # Add any other relevant files
+  git commit -m "Bump version to $version"
+
   gh release create "$version" --generate-notes -p --target "$current_branch"
   echo "Pre-release $version created."
 else
