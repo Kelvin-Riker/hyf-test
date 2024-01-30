@@ -5,6 +5,7 @@ update_type="patch"
 pre_release=true
 
 update_version() {
+    env -i
   # Update version based on the specified type and commit the changes
   version=$(npm version "$update_type")
   git add package.json 
