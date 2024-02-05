@@ -27,4 +27,3 @@ gh release create v$(node -p "require('./package.json').version") \
   -n "Release notes for $(node -p "require('./package.json').version")" \
   --target $release_target \
   $( [ "$is_production" == "production" ] && echo "--title production --notes \"This is a production release\"" || echo "--prerelease" )
-  --target $release_target
